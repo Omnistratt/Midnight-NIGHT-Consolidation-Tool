@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midnight NIGHT Consolidation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f0f1e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #1a1a2e;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid rgba(138, 92, 246, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2a2a4e 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            border-bottom: 2px solid rgba(138, 92, 246, 0.3);
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+            color: #c4b5fd;
+        }
+
+        .content {
+            padding: 40px;
+            background: #16213e;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step {
+            background: linear-gradient(135deg, #2a2a4e 0%, #252544 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
+        }
+
+        .step h3 {
+            color: #c4b5fd;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step p {
+            color: #d1d5db;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.6), 0 0 40px rgba(167, 139, 250, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #c4b5fd;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(167, 139, 250, 0.4);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+            background: #1a1f3a;
+            color: #e5e7eb;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #a78bfa;
+            background: #1e2447;
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2), 0 0 20px rgba(167, 139, 250, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-copy {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .btn-copy:hover {
+            background: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-copy:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-copy.copied {
+            background: #17a2b8;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .instructions {
+            background: rgba(167, 139, 250, 0.15);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(167, 139, 250, 0.4);
+        }
+
+        .instructions h4 {
+            color: #c4b5fd;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .wallet-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .wallet-tab {
+            padding: 10px 20px;
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            background: #1a1a2e;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #e0e0e0;
+        }
+
+        .wallet-tab:hover {
+            background: #2a2a4e;
+            border-color: #8b5cf6;
+        }
+
+        .wallet-tab.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            border-color: #a78bfa;
+        }
+
+        .wallet-instructions {
+            display: none;
+            background: rgba(31, 41, 55, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: #e0e0e0;
+        }
+
+        .wallet-instructions.active {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message-box {
+            background: linear-gradient(135deg, #1a1f3a 0%, #1e2447 100%);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(167, 139, 250, 0.5);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow-wrap: break-word;
+            color: #c4b5fd;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress {
+            background: #1f2937;
+            border-radius: 8px;
+            height: 30px;
+            overflow: hidden;
+            margin: 20px 0;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            height: 100%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Midnight NIGHT Consolidation Tool</h1>
+            <p>Easily consolidate your NIGHT tokens from multiple addresses</p>
+        </div>
+
+        <div class="content">
+            <!-- Single Address Mode -->
+            <div id="single-mode" class="section active">
+                <div class="step">
+                    <h3><span class="step-number">1</span> Enter Your Recipient Address</h3>
+                    <p style="margin-bottom: 15px;">This is the address where ALL your NIGHT tokens will be consolidated.</p>
+                    <div class="form-group">
+                        <label for="recipient">Recipient Address (starts with addr1)</label>
+                        <input type="text" id="recipient" placeholder="addr1qxy123..." maxlength="103">
+                        <small style="color: #9ca3af;">Must be registered at sm.midnight.gd and have zero transactions</small>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">2</span> Sign Message in Your Wallet</h3>
+                    <div class="instructions">
+                        <h4>Message to Sign:</h4>
+                        <div class="message-box" id="messageToSign">
+                            First enter your recipient address above
+                        </div>
+                        <button class="btn-copy" id="copyMessageBtn" onclick="copyMessage()" disabled>
+                            Copy Message
+                        </button>
+                        <small style="display: block; margin-top: 10px;">Copy this exact message and sign it in your wallet</small>
+                    </div>
+
+                    <div class="wallet-tabs">
+                        <div class="wallet-tab active" onclick="switchWallet('lace')">Lace</div>
+                        <div class="wallet-tab" onclick="switchWallet('eternl')">Eternl</div>
+                        <div class="wallet-tab" onclick="switchWallet('nami')">Nami</div>
+                    </div>
+
+                    <div id="lace-instructions" class="wallet-instructions active">
+                        <h4>Lace Wallet Instructions:</h4>
+                        <ol>
+                            <li>Open Lace wallet extension</li>
+                            <li>Click on your wallet name → <strong>Account</strong> menu</li>
+                            <li>Select <strong>Sign message</strong></li>
+                            <li>Paste the message shown above</li>
+                            <li>Select the <strong>payment address</strong> (NOT staking address)</li>
+                            <li>Click <strong>Sign</strong></li>
+                            <li>Copy the signature and paste below</li>
+                        </ol>
+                    </div>
+
+                    <div id="eternl-instructions" class="wallet-instructions">
+                        <h4>Eternl Wallet Instructions:</h4>
+                        <ol>
+                            <li>Open Eternl wallet</li>
+                            <li>Go to <strong>Settings</strong> → <strong>Tools</strong></li>
+                            <li>Select <strong>Sign message</strong></li>
+                            <li>Paste the message shown above</li>
+                            <li>Choose the <strong>payment address</strong> to sign with</li>
+                            <li>Click <strong>Sign</strong></li>
+                            <li>Copy the signature and paste below</li>
+                        </ol>
+                    </div>
+
+                    <div id="nami-instructions" class="wallet-instructions">
+                        <h4>Nami Wallet Instructions:</h4>
+                        <ol>
+                            <li>Open Nami wallet</li>
+                            <li>Access the <strong>dApp connection</strong> or developer menu</li>
+                            <li>Use <strong>Sign Data</strong> feature</li>
+                            <li>Paste the message shown above</li>
+                            <li>Sign with <strong>payment address</strong></li>
+                            <li>Copy the signature and paste below</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">3</span> Enter Donor Address and Signature</h3>
+                    <div class="form-group">
+                        <label for="donor">Donor Address (address to consolidate FROM)</label>
+                        <input type="text" id="donor" placeholder="addr1qabc456..." maxlength="103">
+                        <small style="color: #9ca3af;">This address must have signed the message above in Step 2</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="signature">Signature from Your Wallet</label>
+                        <textarea id="signature" placeholder="Paste the signature you got from your wallet here..."></textarea>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">4</span> Submit Consolidation</h3>
+                    <div id="alert-single" class="alert"></div>
+                    <button class="btn" onclick="submitSingle()">Consolidate This Address</button>
+                </div>
+
+                <div id="loading-single" class="loading">
+                    <div class="spinner"></div>
+                    <p>Submitting to Midnight API...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Use local proxy to avoid CORS issues
+        const API_BASE = '/api';
+        const MAX_RETRIES = 3;
+        const RETRY_DELAY = 20000; // 20 seconds
+        // Update message to sign when recipient changes
+        document.getElementById('recipient')?.addEventListener('input', function() {
+            const recipient = this.value.trim();
+            const messageBox = document.getElementById('messageToSign');
+            const copyBtn = document.getElementById('copyMessageBtn');
+
+            if (recipient && recipient.startsWith('addr1')) {
+                messageBox.textContent = `Assign accumulated Scavenger rights to: ${recipient}`;
+                copyBtn.disabled = false;
+            } else {
+                messageBox.textContent = 'First enter your recipient address above';
+                copyBtn.disabled = true;
+            }
+        });
+
+        function copyMessage() {
+            const messageBox = document.getElementById('messageToSign');
+            const copyBtn = document.getElementById('copyMessageBtn');
+            const message = messageBox.textContent;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(message).then(() => {
+                // Visual feedback
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = 'Copied!';
+                copyBtn.classList.add('copied');
+
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = message;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                // Visual feedback
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = 'Copied!';
+                copyBtn.classList.add('copied');
+
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function switchWallet(wallet) {
+            // Update tabs
+            document.querySelectorAll('.wallet-tab').forEach(tab => tab.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Update instructions
+            document.querySelectorAll('.wallet-instructions').forEach(inst => inst.classList.remove('active'));
+            document.getElementById(wallet + '-instructions').classList.add('active');
+        }
+
+        function validateAddress(address) {
+            return address.startsWith('addr1') && address.length === 103;
+        }
+
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+        }
+
+        function hideAlert(elementId) {
+            const alert = document.getElementById(elementId);
+            alert.className = 'alert';
+        }
+
+        async function consolidateAPI(recipient, donor, signature, retryCount = 0) {
+            const url = `${API_BASE}/donate_to/${recipient}/${donor}/${signature}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                // Handle rate limiting
+                if (response.status === 429 && retryCount < MAX_RETRIES) {
+                    const delay = RETRY_DELAY * Math.pow(2, retryCount);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return consolidateAPI(recipient, donor, signature, retryCount + 1);
+                }
+
+                // Handle timeout
+                if (response.status === 408 && retryCount < MAX_RETRIES) {
+                    const delay = RETRY_DELAY * Math.pow(2, retryCount);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return consolidateAPI(recipient, donor, signature, retryCount + 1);
+                }
+
+                const data = await response.json().catch(() => ({
+                    status: 'error',
+                    message: response.statusText || 'Unknown error',
+                    status_code: response.status
+                }));
+
+                return {
+                    ...data,
+                    status_code: response.status,
+                    ok: response.ok
+                };
+
+            } catch (error) {
+                if (retryCount < MAX_RETRIES) {
+                    const delay = RETRY_DELAY * Math.pow(2, retryCount);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return consolidateAPI(recipient, donor, signature, retryCount + 1);
+                }
+                return {
+                    status: 'error',
+                    message: error.message
+                };
+            }
+        }
+
+        async function submitSingle() {
+            const recipient = document.getElementById('recipient').value.trim();
+            const donor = document.getElementById('donor').value.trim();
+            const signature = document.getElementById('signature').value.trim();
+
+            // Validate inputs
+            if (!recipient || !donor || !signature) {
+                showAlert('alert-single', 'Please fill in all fields!', 'error');
+                return;
+            }
+
+            if (!validateAddress(recipient)) {
+                showAlert('alert-single', 'Invalid recipient address format! Must start with addr1 and be 103 characters.', 'error');
+                return;
+            }
+
+            if (!validateAddress(donor)) {
+                showAlert('alert-single', 'Invalid donor address format! Must start with addr1 and be 103 characters.', 'error');
+                return;
+            }
+
+            // Show loading
+            hideAlert('alert-single');
+            document.getElementById('loading-single').classList.add('show');
+
+            // Submit
+            const result = await consolidateAPI(recipient, donor, signature);
+
+            // Hide loading
+            document.getElementById('loading-single').classList.remove('show');
+
+            // Show result
+            if (result.ok || result.status === 'success') {
+                showAlert('alert-single',
+                    `SUCCESS: ${result.message || 'Consolidation completed successfully.'} ${result.solutions_consolidated ? `Solutions: ${result.solutions_consolidated}` : ''}`,
+                    'success');
+                // Clear signature field
+                document.getElementById('signature').value = '';
+            } else {
+                let errorMsg = `ERROR: ${result.message || 'Unknown error'}`;
+
+                // Add helpful hints
+                if (result.status_code === 409) {
+                    errorMsg += '\nNote: This address was already consolidated.';
+                } else if (result.status_code === 400) {
+                    errorMsg += '\nNote: Invalid signature. Make sure you signed the exact message with the donor address.';
+                } else if (result.status_code === 404) {
+                    errorMsg += '\nNote: Address not registered for Scavenger Mine. Register at sm.midnight.gd';
+                }
+
+                showAlert('alert-single', errorMsg, 'error');
+            }
+        }
+
+    </script>
+</body>
+</html>
